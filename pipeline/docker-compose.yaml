@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ny_taxi
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - pg-network
+    depends_on:
+      - postgres
+
+  ingest:
+    build: .
+    networks:
+      - pg-network
+    depends_on:
+      - postgres
+    command: --pg-user=root --pg-password=root --pg-host=postgres --pg-port=5432 --pg-db=ny_taxi --year=2021 --month=1 --table-name=yellow_taxi_data --chunk-size=100000
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  pg-network:
+    driver: bridge
