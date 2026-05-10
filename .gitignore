@@ -1,8 +1,4 @@
 *.parquet
-*.csv
-*.tsv
-*.json
-.gz
 
 
 # Byte-compiled / optimized / DLL files
