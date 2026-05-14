@@ -25,9 +25,9 @@ dtype = {
     "congestion_surcharge": "float64"
 }
 
-parse_dates = [
-    "tpep_pickup_datetime",
-    "tpep_dropoff_datetime"
+possible_dates = [
+    "tpep_pickup_datetime", "tpep_dropoff_datetime",
+    "lpep_pickup_datetime", "lpep_dropoff_datetime"
 ]
 
 
@@ -51,17 +51,19 @@ def run(pg_user, pg_password, pg_host, pg_port, pg_db, year, month, table_name, 
         f'postgresql+psycopg://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_db}'
     )
 
-    df_iter = pd.read_csv(
-        url,
-        dtype=dtype,
-        parse_dates=parse_dates,
-        iterator=True,
-        chunksize=chunk_size,
-    )
+    if url.endswith('.parquet'):
+        print("Reading local parquet file...")
+        df = pd.read_parquet(url)
+        df_iter = [df]
+    else:
+        df_iter = pd.read_csv(url, iterator=True, chunksize=100000)
 
     first = True
 
     for df_chunk in tqdm(df_iter):
+        for col in possible_dates:
+            if col in df_chunk.columns:
+                df_chunk[col] = pd.to_datetime(df_chunk[col])
         if first:
             print('creating table')
             df_chunk.head(n=0).to_sql(
