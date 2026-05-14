@@ -27,7 +27,18 @@ I moved away from manual cloud configuration and learned to manage resources usi
 * **SQL Logic:** Complex data filtering, date casting, and multi-table joins for analytical queries.
 * **IaC (Infrastructure as Code):** Understanding the `init` -> `plan` -> `apply` workflow to maintain cloud state.
 * **Version Control:** Organizing code into a clean, professional GitHub directory structure.
+---
+### 📊 Project Evidence
+
+#### Infrastructure as Code
+Provisioning Google Cloud resources with Terraform:
+![Terraform Plan](first-week/images/plan_terraform_screenshot.png)
+
+#### Data Ingestion & SQL Verification
+Successfully loaded NYC taxi data into Postgres:
+![pgAdmin Data Preview](first-week/images/pgadmin_screenshot.png)
 
 
 ---
 *Follow my journey as I move into Week 2: Workflow Orchestration!*
+
